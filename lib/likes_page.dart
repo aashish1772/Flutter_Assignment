@@ -101,6 +101,18 @@ class _LikesPageState extends State<LikesPage> with TickerProviderStateMixin {
     }
   }
 
+  List<Widget> vectorsList(int index, int total) {
+    List<Widget> vectors = [];
+    for (int i = 0; i < total; i++) {
+      if (i < index) {
+        vectors.add(Image.asset('assets/Vector/Vector Dark.png'));
+      } else {
+        vectors.add(Image.asset('assets/Vector/Vector Light.png'));
+      }
+    }
+    return vectors;
+  }
+
   Widget allView() {
     List<Widget> elements = [];
     int overallIndex = -1;
@@ -270,7 +282,15 @@ class _LikesPageState extends State<LikesPage> with TickerProviderStateMixin {
           flexibleSpace: Column(
             children: [
               const SizedBox(
-                height: 30,
+                height: 10,
+              ),
+              // just a decoration element
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: vectorsList(2, 4),
+              ),
+              const SizedBox(
+                height: 5,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

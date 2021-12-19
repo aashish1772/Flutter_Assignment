@@ -1,1 +1,3 @@
 Assumptions - 
+1. The vector element at top is just a decoration element as app journey is not known.
+2. As some of images are not completely circular, the border seems unen or not visible for those images.

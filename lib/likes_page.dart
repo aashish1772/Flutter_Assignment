@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:habeato_assignment/item_widget.dart';
-import 'package:animations/animations.dart';
 import 'constants.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class LikesPage extends StatefulWidget {
   const LikesPage({Key? key}) : super(key: key);
@@ -103,49 +103,73 @@ class _LikesPageState extends State<LikesPage> with TickerProviderStateMixin {
 
   Widget allView() {
     List<Widget> elements = [];
+    int overallIndex = -1;
     for (int i = 1; i < categories.length; i++) {
       int len = categoryCount[categories[i]] ?? 0;
       for (int index = 0; index < len; index++) {
+        overallIndex += 1;
         List<String> imageName = [
           'assets',
           categories[i],
           itemsMap[categories[i]]![index]['name']!,
         ];
         elements.add(
-          GestureDetector(
-            onTap: () => itemSelected(categories[i], index),
-            child: ItemWidget(
-              selected: itemsMap[categories[i]]![index]['isSelected'] == 'true',
-              imageName: imageName,
+          AnimationConfiguration.staggeredGrid(
+            position: overallIndex,
+            duration: const Duration(seconds: 1),
+            columnCount: 2,
+            child: FadeInAnimation(
+              child: GestureDetector(
+                onTap: () => itemSelected(categories[i], index),
+                child: ItemWidget(
+                  selected:
+                      itemsMap[categories[i]]![index]['isSelected'] == 'true',
+                  imageName: imageName,
+                ),
+              ),
             ),
           ),
         );
       }
-      elements.add(GestureDetector(
-        onTap: () => updateCategoryCount(categories[i]),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 70,
-              backgroundColor: categoryColor[categories[i]],
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  'More ' + categories[i],
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.black),
+      overallIndex += 1;
+      elements.add(
+        AnimationConfiguration.staggeredGrid(
+          position: overallIndex,
+          duration: const Duration(milliseconds: 375),
+          columnCount: 2,
+          child: ScaleAnimation(
+            child: FadeInAnimation(
+              child: GestureDetector(
+                onTap: () => updateCategoryCount(categories[i]),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundColor: categoryColor[categories[i]],
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Text(
+                          'More ' + categories[i],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
+          ),
         ),
-      ));
+      );
     }
-    return GridView.count(
-      crossAxisCount: 2,
-      scrollDirection: Axis.vertical,
-      shrinkWrap: true,
-      children: elements,
+    return AnimationLimiter(
+      child: GridView.count(
+        crossAxisCount: 2,
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        children: elements,
+      ),
     );
   }
 
@@ -153,23 +177,34 @@ class _LikesPageState extends State<LikesPage> with TickerProviderStateMixin {
     List<Widget> views = [];
     for (int i = 1; i < categories.length; i++) {
       views.add(
-        GridView.count(
-          crossAxisCount: 2,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          children: List.generate(itemsMap[categories[i]]!.length, (index) {
-            List<String> imageName = [
-              'assets',
-              categories[i],
-              itemsMap[categories[i]]![index]['name']!,
-            ];
-            return GestureDetector(
-                onTap: () => itemSelected(categories[i], index),
-                child: ItemWidget(
-                    selected:
-                        itemsMap[categories[i]]![index]['isSelected'] == 'true',
-                    imageName: imageName));
-          }),
+        AnimationLimiter(
+          child: GridView.count(
+            crossAxisCount: 2,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            children: List.generate(itemsMap[categories[i]]!.length, (index) {
+              List<String> imageName = [
+                'assets',
+                categories[i],
+                itemsMap[categories[i]]![index]['name']!,
+              ];
+              return AnimationConfiguration.staggeredGrid(
+                position: index,
+                duration: const Duration(seconds: 1),
+                columnCount: 2,
+                child: FadeInAnimation(
+                  child: GestureDetector(
+                    onTap: () => itemSelected(categories[i], index),
+                    child: ItemWidget(
+                        selected: itemsMap[categories[i]]![index]
+                                ['isSelected'] ==
+                            'true',
+                        imageName: imageName),
+                  ),
+                ),
+              );
+            }),
+          ),
         ),
       );
     }

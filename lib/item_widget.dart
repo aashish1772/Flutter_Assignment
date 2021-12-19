@@ -24,9 +24,12 @@ class ItemWidget extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              imageName.last,
-              textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.only(left: 5, right: 5),
+              child: Text(
+                imageName.last + "",
+                textAlign: TextAlign.center,
+              ),
             )
           ],
         ),
